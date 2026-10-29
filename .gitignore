@@ -2,3 +2,5 @@ __pycache__/
 *.py[cod]
 *.part
 .pytest_cache/
+
+data/yellow_tripdata_2024-06.parquet
