@@ -1,0 +1,105 @@
+{
+  "month": "2025-01",
+  "attempt_number": 1,
+  "passed": false,
+  "decision": "REJECT",
+  "checks": [
+    {
+      "check_id": "V1_SCHEMA_AND_COMPLETENESS",
+      "check_name": "Output Schema Completeness & Non-Null Integrity",
+      "passed": true,
+      "expected_contract": "All 18 contractual columns present, row_count > 0, and 0 NULL/NaN cells.",
+      "observed_evidence": "missing_cols=[], row_count=205, null_or_empty_cells=0",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    },
+    {
+      "check_id": "V2_TEMPORAL_BOUNDARY_AUDIT",
+      "check_name": "Strict Target Month Trip Count Reconciliation",
+      "passed": true,
+      "expected_contract": "Summary total_trip_count must equal exact in-month trip count (54,971) within [2025-01-01 00:00:00, 2025-02-01 00:00:00), excluding 29 out-of-month spillover rows.",
+      "observed_evidence": "summary_total_trip_count=54,971, independent_in_month_rows=54,971, excluded_spillover_rows=29",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    },
+    {
+      "check_id": "V3_GLOBAL_REVENUE_RECONCILIATION",
+      "check_name": "Global Recognized Revenue & Itemized Source Reconciliation",
+      "passed": true,
+      "expected_contract": "Summary gross_passenger_revenue_usd must match independent SQL query ($2,689,193.04) and raw itemized sum ($2,689,193.04) within rounding tolerance.",
+      "observed_evidence": "summary_gross=$2,689,193.04, independent_gross=$2,689,193.04 (diff=$0.00), independent_itemized_sum=$2,689,193.04 (raw_itemized_diff=$0.00)",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    },
+    {
+      "check_id": "V4_ACCOUNTING_IDENTITY_CHECK",
+      "check_name": "Summary Cell Horizontal Accounting Identity (Components == Gross Revenue)",
+      "passed": false,
+      "expected_contract": "For every (pickup_zone, payment_type) row: |fare + surcharges_and_fees + tip + tolls - gross_passenger_revenue_usd| <= $0.05",
+      "observed_evidence": "41 summary cells failed horizontal accounting identity. First failure: Zone=138 (LaGuardia Airport) / PT=0 (Flex Fare trip): components_sum=$13,746.25 vs gross=$14,188.00 (diff=$441.75)",
+      "severity": "CRITICAL",
+      "remediation_hint": "Check for SQL NULL propagation in surcharge columns (e.g., NULL congestion_surcharge or airport_fee on Flex Fare rows) or missing fee columns; wrap each surcharge column in COALESCE(col, 0.0) before summing."
+    },
+    {
+      "check_id": "V5_ZONE_JOIN_INTEGRITY",
+      "check_name": "TLC Pickup Zone Referential Integrity (1..265)",
+      "passed": true,
+      "expected_contract": "All pu_location_id values map to official TLC LocationIDs [1..265] with zero unjoined zones.",
+      "observed_evidence": "invalid_or_unjoined_zone_rows=0",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    },
+    {
+      "check_id": "V6_PAYMENT_TYPE_DOMAIN_CHECK",
+      "check_name": "Authorized Payment Type Code & Label Contract",
+      "passed": true,
+      "expected_contract": "All payment_type_id values in authorized set [0, 1, 2, 3, 4, 5, 6] with valid finance labels.",
+      "observed_evidence": "All 205 rows use authorized payment types.",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    },
+    {
+      "check_id": "V7_CELL_SPOT_CHECK",
+      "check_name": "Independent 5-Cell Granular SQL Spot-Check Audit",
+      "passed": true,
+      "expected_contract": "Top 5 (pickup_zone, payment_type) cells match independent raw SQL queries to the cent.",
+      "observed_evidence": "5/5 audited cells matched exact trip counts and gross_passenger_revenue_usd.",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    },
+    {
+      "check_id": "V8_STATISTICAL_SANITY_BOUNDS",
+      "check_name": "Unit Economics & Non-Negative Revenue Sanity Check",
+      "passed": true,
+      "expected_contract": "gross_passenger_revenue_usd >= 0 and avg_revenue_per_trip_usd within [$2.50, $500.00] for cells with >= 10 trips.",
+      "observed_evidence": "0 unit-economics outliers across 205 groups.",
+      "severity": "CRITICAL",
+      "remediation_hint": null
+    }
+  ],
+  "rejection_codes": [
+    "REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH"
+  ],
+  "remediation_hints": [
+    "Horizontal accounting identity failed (`fare + surcharges + tip + tolls != gross_passenger_revenue_usd`). Wrap each surcharge column in row-level COALESCE(col, 0.0) so NULLs in `congestion_surcharge` or `airport_fee` do not zero out `surcharges_and_fees_usd`."
+  ],
+  "independent_audit_metrics": {
+    "month": "2025-01",
+    "attempt_number": 1,
+    "decision": "REJECT",
+    "summary_row_count": 205,
+    "independent_in_month_trip_count": 54971,
+    "excluded_out_of_month_spillover_rows": 29,
+    "independent_gross_passenger_revenue_usd": 2689193.04,
+    "reported_gross_passenger_revenue_usd": 2689193.04,
+    "independent_itemized_component_sum_usd": 2689193.04,
+    "independent_reversal_adjustments_usd": -4557.33,
+    "reported_reversal_adjustments_usd": -4557.33,
+    "independent_net_total_amount_usd": 2684635.71,
+    "reported_net_total_amount_usd": 2684635.71,
+    "checks_passed": 7,
+    "checks_total": 8,
+    "isolation_verified": true
+  },
+  "evidence_file_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\outputs\\verifier_evidence_2025-01_attempt_1.json"
+}

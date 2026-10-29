@@ -1,0 +1,22 @@
+{
+  "month": "2025-99",
+  "run_id": "test_refusal_2025_99",
+  "refusal_stage": "STAGE_1_DRIFT_DETECTION_GATE",
+  "reason_code": "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+  "headline": "Refused to ship 2025-99 revenue summary due to fatal source data/contract violation.",
+  "detailed_explanation": "Detected 2 fatal contract/integrity violation(s) in 2025-99. Refusing to compute or ship a potentially wrong revenue number.",
+  "violated_contracts": [
+    "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+    "DRIFT_FATAL_ACCOUNTING_RECONCILIATION_FAILURE"
+  ],
+  "evidence_metrics": {
+    "total_rows": 12000,
+    "in_month_ratio": 1.0,
+    "unmapped_payment_type_rows": 1646,
+    "unmapped_payment_type_ratio": 0.137167,
+    "accounting_mismatch_rows": 4593,
+    "accounting_mismatch_ratio": 0.38275,
+    "max_accounting_discrepancy_usd": 25.0
+  },
+  "human_escalation_action": "Escalate to Finance & TLC Vendor Data Engineering: do not ingest or report this monthly file until the corrupted `total_amount` accounting discrepancy and unmapped `payment_type` codes are fixed upstream."
+}

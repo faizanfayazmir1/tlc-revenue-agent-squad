@@ -1,0 +1,258 @@
+{
+  "run_id": "test_refusal_2025_99",
+  "month": "2025-99",
+  "parquet_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\data\\yellow_tripdata_2025-99.parquet",
+  "status": "REFUSED",
+  "steps_used": 1,
+  "max_steps": 12,
+  "retries_used": 0,
+  "max_retries": 3,
+  "total_cost_usd": 0.008,
+  "max_cost_usd": 0.25,
+  "resumed_from_checkpoint": false,
+  "skipped_stages": [],
+  "drift_assessment": {
+    "month": "2025-99",
+    "overall_severity": "FATAL_REFUSAL",
+    "decision": "STOP_AND_REFUSE",
+    "findings": [
+      {
+        "drift_id": "DRIFT_CASE_AIRPORT_FEE",
+        "category": "SCHEMA_CASE_CHANGE",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "airport_fee",
+        "baseline_expectation": "Column 'Airport_fee' (exact case in 2024 schema)",
+        "observed_reality": "Column renamed with different casing: 'airport_fee'",
+        "impact_on_revenue": "Case-sensitive SQL references or Parquet readers would fail or drop airport fees.",
+        "proposed_action": "Map canonical 'Airport_fee' -> 'airport_fee' in SQL Builder and Verifier."
+      },
+      {
+        "drift_id": "DRIFT_NEW_FEE_COL_CBD_CONGESTION_FEE",
+        "category": "SCHEMA_NEW_REVENUE_COLUMN",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "cbd_congestion_fee",
+        "baseline_expectation": "19-column 2024 schema (no MTA CBD congestion fee column)",
+        "observed_reality": "20-column 2025 schema includes 'cbd_congestion_fee' (non-null in 100.0% of rows, range [0.75, 0.75])",
+        "impact_on_revenue": "'cbd_congestion_fee' is included in passenger `total_amount` starting Jan 5, 2025. Omitting it from `surcharges_and_fees_usd` and itemized reconciliation causes component sum to understate `total_amount` by $0.75/trip on CBD rides.",
+        "proposed_action": "Adapt SQL Builder and Verifier to incorporate COALESCE(\"cbd_congestion_fee\", 0.0) into `surcharges_and_fees_usd` and accounting identity checks."
+      },
+      {
+        "drift_id": "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+        "category": "DOMAIN_CONTRACT_VIOLATION",
+        "severity": "FATAL_REFUSAL",
+        "column_or_field": "payment_type",
+        "baseline_expectation": "Unmapped payment_type ratio <= 0.50%",
+        "observed_reality": "1,646 rows (13.72%) have unauthorized payment_type codes: {'1': 8183, '2': 2171, '99': 1646}",
+        "impact_on_revenue": "Cannot attribute revenue to valid finance payment categories.",
+        "proposed_action": "Refuse to ship summary and escalate unmapped payment_type codes to Finance/Data Eng."
+      },
+      {
+        "drift_id": "DRIFT_FATAL_ACCOUNTING_RECONCILIATION_FAILURE",
+        "category": "ACCOUNTING_INTEGRITY_CORRUPTION",
+        "severity": "FATAL_REFUSAL",
+        "column_or_field": "total_amount",
+        "baseline_expectation": "Itemized components reconcile with total_amount within $0.05 on >= 95.0% of rows",
+        "observed_reality": "4,593 / 12,000 rows (38.27%) fail itemized accounting reconciliation (max discrepancy = $25.00)",
+        "impact_on_revenue": "total_amount diverges fundamentally from the sum of fare + surcharges + tips + tolls. Shipping either number would report unverified, corrupted revenue to Finance.",
+        "proposed_action": "Refuse to publish summary and escalate accounting discrepancy to Finance & TLC Vendor Ops."
+      }
+    ],
+    "adaptation_plan": {
+      "can_proceed": false,
+      "column_mapping": {
+        "VendorID": "VendorID",
+        "tpep_pickup_datetime": "tpep_pickup_datetime",
+        "tpep_dropoff_datetime": "tpep_dropoff_datetime",
+        "passenger_count": "passenger_count",
+        "trip_distance": "trip_distance",
+        "RatecodeID": "RatecodeID",
+        "store_and_fwd_flag": "store_and_fwd_flag",
+        "PULocationID": "PULocationID",
+        "DOLocationID": "DOLocationID",
+        "payment_type": "payment_type",
+        "fare_amount": "fare_amount",
+        "extra": "extra",
+        "mta_tax": "mta_tax",
+        "tip_amount": "tip_amount",
+        "tolls_amount": "tolls_amount",
+        "improvement_surcharge": "improvement_surcharge",
+        "total_amount": "total_amount",
+        "congestion_surcharge": "congestion_surcharge",
+        "Airport_fee": "airport_fee",
+        "cbd_congestion_fee": "cbd_congestion_fee"
+      },
+      "active_surcharge_columns": [
+        "extra",
+        "mta_tax",
+        "improvement_surcharge",
+        "congestion_surcharge",
+        "airport_fee",
+        "cbd_congestion_fee"
+      ],
+      "payment_type_mapping": {
+        "1": "Credit card",
+        "2": "Cash",
+        "3": "No charge",
+        "4": "Dispute",
+        "5": "Unknown",
+        "6": "Voided trip"
+      },
+      "requires_null_coalesce_on_fees": false,
+      "requires_strict_temporal_filter": false,
+      "notes": [
+        "Map canonical 'Airport_fee' -> 'airport_fee' in SQL Builder and Verifier.",
+        "Adapt SQL Builder and Verifier to incorporate COALESCE(\"cbd_congestion_fee\", 0.0) into `surcharges_and_fees_usd` and accounting identity checks.",
+        "Refuse to ship summary and escalate unmapped payment_type codes to Finance/Data Eng.",
+        "Refuse to publish summary and escalate accounting discrepancy to Finance & TLC Vendor Ops."
+      ]
+    },
+    "summary_rationale": "Detected 2 fatal contract/integrity violation(s) in 2025-99. Refusing to compute or ship a potentially wrong revenue number."
+  },
+  "builder_attempts": [],
+  "verification_reports": [],
+  "refusal_report": {
+    "month": "2025-99",
+    "run_id": "test_refusal_2025_99",
+    "refusal_stage": "STAGE_1_DRIFT_DETECTION_GATE",
+    "reason_code": "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+    "headline": "Refused to ship 2025-99 revenue summary due to fatal source data/contract violation.",
+    "detailed_explanation": "Detected 2 fatal contract/integrity violation(s) in 2025-99. Refusing to compute or ship a potentially wrong revenue number.",
+    "violated_contracts": [
+      "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+      "DRIFT_FATAL_ACCOUNTING_RECONCILIATION_FAILURE"
+    ],
+    "evidence_metrics": {
+      "total_rows": 12000,
+      "in_month_ratio": 1.0,
+      "unmapped_payment_type_rows": 1646,
+      "unmapped_payment_type_ratio": 0.137167,
+      "accounting_mismatch_rows": 4593,
+      "accounting_mismatch_ratio": 0.38275,
+      "max_accounting_discrepancy_usd": 25.0
+    },
+    "human_escalation_action": "Escalate to Finance & TLC Vendor Data Engineering: do not ingest or report this monthly file until the corrupted `total_amount` accounting discrepancy and unmapped `payment_type` codes are fixed upstream."
+  },
+  "final_output_csv": null,
+  "final_output_json": null,
+  "final_verifier_evidence": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\outputs\\refusal_report_2025-99.json",
+  "events": [
+    {
+      "seq_no": 1,
+      "timestamp": "2026-10-29T02:23:11Z",
+      "agent": "RevenueSquadOrchestrator",
+      "stage": "STAGE_0_INIT",
+      "action": "INITIALIZE_OR_RESUME_RUN",
+      "tool_used": "DurableStateStore.init_or_load_run",
+      "status": "STARTED",
+      "summary": "Started new run 'test_refusal_2025_99' for month=2025-99 (bounds: max_steps=12, max_retries=3, max_cost_usd=$0.25).",
+      "details": {
+        "parquet_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\data\\yellow_tripdata_2025-99.parquet",
+        "resumed": false
+      }
+    },
+    {
+      "seq_no": 2,
+      "timestamp": "2026-10-29T02:23:11Z",
+      "agent": "SourceProfilerAndDriftAgent",
+      "stage": "STAGE_1_PROFILE_AND_DRIFT",
+      "action": "PROFILE_SOURCE_AND_DETECT_DRIFT",
+      "tool_used": "inspect_parquet_schema + execute_readonly_sql",
+      "status": "STOP_AND_REFUSE",
+      "summary": "Detected 2 fatal contract/integrity violation(s) in 2025-99. Refusing to compute or ship a potentially wrong revenue number.",
+      "details": {
+        "total_rows": 12000,
+        "in_month_rows": 12000,
+        "out_of_month_rows": 0,
+        "detected_fee_columns": [
+          "extra",
+          "mta_tax",
+          "improvement_surcharge",
+          "congestion_surcharge",
+          "airport_fee",
+          "cbd_congestion_fee"
+        ],
+        "payment_type_counts": {
+          "1": 8183,
+          "2": 2171,
+          "99": 1646
+        },
+        "accounting_mismatch_rows": 4593,
+        "accounting_mismatch_ratio": 0.38275,
+        "drift_findings": [
+          {
+            "drift_id": "DRIFT_CASE_AIRPORT_FEE",
+            "category": "SCHEMA_CASE_CHANGE",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "airport_fee",
+            "baseline_expectation": "Column 'Airport_fee' (exact case in 2024 schema)",
+            "observed_reality": "Column renamed with different casing: 'airport_fee'",
+            "impact_on_revenue": "Case-sensitive SQL references or Parquet readers would fail or drop airport fees.",
+            "proposed_action": "Map canonical 'Airport_fee' -> 'airport_fee' in SQL Builder and Verifier."
+          },
+          {
+            "drift_id": "DRIFT_NEW_FEE_COL_CBD_CONGESTION_FEE",
+            "category": "SCHEMA_NEW_REVENUE_COLUMN",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "cbd_congestion_fee",
+            "baseline_expectation": "19-column 2024 schema (no MTA CBD congestion fee column)",
+            "observed_reality": "20-column 2025 schema includes 'cbd_congestion_fee' (non-null in 100.0% of rows, range [0.75, 0.75])",
+            "impact_on_revenue": "'cbd_congestion_fee' is included in passenger `total_amount` starting Jan 5, 2025. Omitting it from `surcharges_and_fees_usd` and itemized reconciliation causes component sum to understate `total_amount` by $0.75/trip on CBD rides.",
+            "proposed_action": "Adapt SQL Builder and Verifier to incorporate COALESCE(\"cbd_congestion_fee\", 0.0) into `surcharges_and_fees_usd` and accounting identity checks."
+          },
+          {
+            "drift_id": "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+            "category": "DOMAIN_CONTRACT_VIOLATION",
+            "severity": "FATAL_REFUSAL",
+            "column_or_field": "payment_type",
+            "baseline_expectation": "Unmapped payment_type ratio <= 0.50%",
+            "observed_reality": "1,646 rows (13.72%) have unauthorized payment_type codes: {'1': 8183, '2': 2171, '99': 1646}",
+            "impact_on_revenue": "Cannot attribute revenue to valid finance payment categories.",
+            "proposed_action": "Refuse to ship summary and escalate unmapped payment_type codes to Finance/Data Eng."
+          },
+          {
+            "drift_id": "DRIFT_FATAL_ACCOUNTING_RECONCILIATION_FAILURE",
+            "category": "ACCOUNTING_INTEGRITY_CORRUPTION",
+            "severity": "FATAL_REFUSAL",
+            "column_or_field": "total_amount",
+            "baseline_expectation": "Itemized components reconcile with total_amount within $0.05 on >= 95.0% of rows",
+            "observed_reality": "4,593 / 12,000 rows (38.27%) fail itemized accounting reconciliation (max discrepancy = $25.00)",
+            "impact_on_revenue": "total_amount diverges fundamentally from the sum of fare + surcharges + tips + tolls. Shipping either number would report unverified, corrupted revenue to Finance.",
+            "proposed_action": "Refuse to publish summary and escalate accounting discrepancy to Finance & TLC Vendor Ops."
+          }
+        ]
+      }
+    },
+    {
+      "seq_no": 3,
+      "timestamp": "2026-10-29T02:23:11Z",
+      "agent": "RevenueSquadOrchestrator",
+      "stage": "STAGE_4_FINALIZE_REFUSAL",
+      "action": "REFUSE_AND_ESCALATE_TO_HUMAN",
+      "tool_used": null,
+      "status": "REFUSED",
+      "summary": "Refused to ship 2025-99 revenue summary due to fatal source data/contract violation. Reason=DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES. Escalation=Escalate to Finance & TLC Vendor Data Engineering: do not ingest or report this monthly file until the corrupted `total_amount` accounting discrepancy and unmapped `payment_type` codes are fixed upstream.",
+      "details": {
+        "month": "2025-99",
+        "run_id": "test_refusal_2025_99",
+        "refusal_stage": "STAGE_1_DRIFT_DETECTION_GATE",
+        "reason_code": "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+        "headline": "Refused to ship 2025-99 revenue summary due to fatal source data/contract violation.",
+        "detailed_explanation": "Detected 2 fatal contract/integrity violation(s) in 2025-99. Refusing to compute or ship a potentially wrong revenue number.",
+        "violated_contracts": [
+          "DRIFT_FATAL_UNMAPPED_PAYMENT_TYPES",
+          "DRIFT_FATAL_ACCOUNTING_RECONCILIATION_FAILURE"
+        ],
+        "evidence_metrics": {
+          "total_rows": 12000,
+          "in_month_ratio": 1.0,
+          "unmapped_payment_type_rows": 1646,
+          "unmapped_payment_type_ratio": 0.137167,
+          "accounting_mismatch_rows": 4593,
+          "accounting_mismatch_ratio": 0.38275,
+          "max_accounting_discrepancy_usd": 25.0
+        },
+        "human_escalation_action": "Escalate to Finance & TLC Vendor Data Engineering: do not ingest or report this monthly file until the corrupted `total_amount` accounting discrepancy and unmapped `payment_type` codes are fixed upstream."
+      }
+    }
+  ]
+}

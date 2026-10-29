@@ -1,0 +1,51 @@
+{
+  "contract_version": "2024.1",
+  "baseline_month": "2024-01",
+  "source_description": "NYC TLC Yellow Taxi Trip Records (2024 Baseline Schema)",
+  "source_url_template": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{month}.parquet",
+  "zone_lookup_url": "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv",
+  "expected_columns": {
+    "VendorID": {"logical_type": "integer", "required": true, "role": "metadata"},
+    "tpep_pickup_datetime": {"logical_type": "timestamp", "required": true, "role": "temporal_filter"},
+    "tpep_dropoff_datetime": {"logical_type": "timestamp", "required": true, "role": "metadata"},
+    "passenger_count": {"logical_type": "numeric", "required": false, "role": "metadata"},
+    "trip_distance": {"logical_type": "numeric", "required": true, "role": "sanity_metric"},
+    "RatecodeID": {"logical_type": "numeric", "required": false, "role": "metadata"},
+    "store_and_fwd_flag": {"logical_type": "string", "required": false, "role": "metadata"},
+    "PULocationID": {"logical_type": "integer", "required": true, "role": "grouping_key"},
+    "DOLocationID": {"logical_type": "integer", "required": true, "role": "metadata"},
+    "payment_type": {"logical_type": "integer", "required": true, "role": "grouping_key"},
+    "fare_amount": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "extra": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "mta_tax": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "tip_amount": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "tolls_amount": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "improvement_surcharge": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "total_amount": {"logical_type": "numeric", "required": true, "role": "revenue_total"},
+    "congestion_surcharge": {"logical_type": "numeric", "required": true, "role": "revenue_component"},
+    "Airport_fee": {"logical_type": "numeric", "required": true, "role": "revenue_component"}
+  },
+  "baseline_payment_types": {
+    "1": "Credit card",
+    "2": "Cash",
+    "3": "No charge",
+    "4": "Dispute",
+    "5": "Unknown",
+    "6": "Voided trip"
+  },
+  "adaptable_known_extensions": {
+    "additional_fee_columns": [
+      "cbd_congestion_fee"
+    ],
+    "extended_payment_types": {
+      "0": "Flex Fare trip",
+      "1": "Credit card",
+      "2": "Cash",
+      "3": "No charge",
+      "4": "Dispute",
+      "5": "Unknown",
+      "6": "Voided trip"
+    },
+    "allow_case_insensitive_column_mapping": true
+  }
+}

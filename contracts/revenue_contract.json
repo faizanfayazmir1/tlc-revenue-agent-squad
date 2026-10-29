@@ -1,0 +1,49 @@
+{
+  "contract_id": "FIN-REV-NYC-TLC-V1",
+  "title": "Monthly Yellow Taxi Revenue Summary Contract",
+  "owner": "Customer Finance & Data Engineering",
+  "revenue_definition": {
+    "primary_metric": "gross_passenger_revenue_usd",
+    "formula": "SUM(total_amount) WHERE tpep_pickup_datetime >= month_start AND tpep_pickup_datetime < month_end AND total_amount > 0 AND fare_amount >= 0",
+    "itemized_reconciliation_formula": "COALESCE(fare_amount,0) + COALESCE(extra,0) + COALESCE(mta_tax,0) + COALESCE(tip_amount,0) + COALESCE(tolls_amount,0) + COALESCE(improvement_surcharge,0) + COALESCE(congestion_surcharge,0) + COALESCE(airport_fee,0) [+ COALESCE(cbd_congestion_fee,0)]",
+    "reversal_handling": "Trips with total_amount <= 0 or fare_amount < 0 (vendor dispute/void reversal adjustments) are segregated into reversal_adjustments_usd and excluded from gross_passenger_revenue_usd so negative reversal rows never silently depress positive recognized revenue or distort unit economics.",
+    "temporal_rule": "Strictly bounded to tpep_pickup_datetime within [YYYY-MM-01 00:00:00, next_month-01 00:00:00). Taximeter clock-drift spillover records outside the target month must be excluded."
+  },
+  "required_output_columns": [
+    "year_month",
+    "pu_location_id",
+    "borough",
+    "pickup_zone",
+    "service_zone",
+    "payment_type_id",
+    "payment_type_name",
+    "total_trip_count",
+    "valid_trip_count",
+    "reversal_trip_count",
+    "fare_revenue_usd",
+    "surcharges_and_fees_usd",
+    "tip_revenue_usd",
+    "tolls_revenue_usd",
+    "gross_passenger_revenue_usd",
+    "reversal_adjustments_usd",
+    "net_total_amount_usd",
+    "avg_revenue_per_trip_usd"
+  ],
+  "quality_thresholds": {
+    "min_in_month_trip_ratio": 0.80,
+    "max_unmapped_payment_type_ratio": 0.005,
+    "max_accounting_mismatch_row_ratio": 0.05,
+    "row_accounting_tolerance_usd": 0.05,
+    "global_reconciliation_tolerance_usd": 0.01,
+    "min_avg_revenue_per_trip_usd": 2.50,
+    "max_avg_revenue_per_trip_usd": 500.00,
+    "valid_zone_id_min": 1,
+    "valid_zone_id_max": 265,
+    "authorized_payment_type_ids": [0, 1, 2, 3, 4, 5, 6]
+  },
+  "execution_bounds": {
+    "max_steps": 12,
+    "max_builder_retries": 3,
+    "max_cost_usd": 0.25
+  }
+}

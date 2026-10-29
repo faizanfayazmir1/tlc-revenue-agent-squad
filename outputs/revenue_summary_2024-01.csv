@@ -1,0 +1,165 @@
+year_month,pu_location_id,borough,pickup_zone,service_zone,payment_type_id,payment_type_name,total_trip_count,valid_trip_count,reversal_trip_count,fare_revenue_usd,surcharges_and_fees_usd,tip_revenue_usd,tolls_revenue_usd,gross_passenger_revenue_usd,reversal_adjustments_usd,net_total_amount_usd,avg_revenue_per_trip_usd
+2024-01,132,Queens,JFK Airport,Airports,1,Credit card,2031,2031,0,142170.0,8204.75,31314.26,8883.2,190572.21,0.0,190572.21,93.83
+2024-01,138,Queens,LaGuardia Airport,Airports,1,Credit card,1876,1876,0,108111.3,7519.5,24254.22,8244.72,148129.74,0.0,148129.74,78.96
+2024-01,161,Manhattan,Midtown Center,Yellow Zone,1,Credit card,2613,2613,0,85277.0,12483.5,18724.93,0.0,116485.43,0.0,116485.43,44.58
+2024-01,237,Manhattan,Upper East Side South,Yellow Zone,1,Credit card,2468,2468,0,81760.18,11835.0,17980.89,0.0,111576.07,0.0,111576.07,45.21
+2024-01,236,Manhattan,Upper East Side North,Yellow Zone,1,Credit card,2154,2154,0,70453.84,10318.5,15528.41,0.0,96300.75,0.0,96300.75,44.71
+2024-01,186,Manhattan,Penn Station/Madison Sq West,Yellow Zone,1,Credit card,1943,1943,0,62660.41,9374.5,13726.29,0.0,85761.2,0.0,85761.2,44.14
+2024-01,162,Manhattan,Midtown East,Yellow Zone,1,Credit card,1881,1881,0,61007.55,9079.0,13486.91,0.0,83573.46,0.0,83573.46,44.43
+2024-01,230,Manhattan,Times Sq/Theatre District,Yellow Zone,1,Credit card,1775,1775,0,57768.16,8478.0,12720.71,0.0,78966.87,0.0,78966.87,44.49
+2024-01,142,Manhattan,Lincoln Square East,Yellow Zone,1,Credit card,1544,1544,0,49697.27,7413.5,10966.71,0.0,68077.48,0.0,68077.48,44.09
+2024-01,239,Manhattan,Upper West Side South,Yellow Zone,1,Credit card,1384,1384,0,46300.34,6635.5,10167.81,0.0,63103.65,0.0,63103.65,45.6
+2024-01,163,Manhattan,Midtown North,Yellow Zone,1,Credit card,1325,1325,0,43552.32,6396.5,9609.51,0.0,59558.33,0.0,59558.33,44.95
+2024-01,164,Manhattan,Midtown South,Yellow Zone,1,Credit card,1278,1278,0,41919.32,6098.5,9157.8,0.0,57175.62,0.0,57175.62,44.74
+2024-01,170,Manhattan,Murray Hill,Yellow Zone,1,Credit card,1156,1156,0,38187.59,5538.5,8459.25,0.0,52185.34,0.0,52185.34,45.14
+2024-01,234,Manhattan,Union Sq,Yellow Zone,1,Credit card,1076,1076,0,35093.29,5167.5,7769.07,0.0,48029.86,0.0,48029.86,44.64
+2024-01,68,Manhattan,East Chelsea,Yellow Zone,1,Credit card,1072,1072,0,35060.83,5130.5,7722.15,0.0,47913.48,0.0,47913.48,44.7
+2024-01,79,Manhattan,East Village,Yellow Zone,1,Credit card,1021,1021,0,34279.2,4915.5,7551.65,0.0,46746.35,0.0,46746.35,45.78
+2024-01,48,Manhattan,Clinton East,Yellow Zone,1,Credit card,956,956,0,31600.39,4578.0,6918.46,0.0,43096.85,0.0,43096.85,45.08
+2024-01,249,Manhattan,West Village,Yellow Zone,1,Credit card,915,915,0,29822.74,4410.5,6571.36,0.0,40804.6,0.0,40804.6,44.6
+2024-01,107,Manhattan,Gramercy,Yellow Zone,1,Credit card,869,869,0,28687.96,4189.0,6264.81,0.0,39141.77,0.0,39141.77,45.04
+2024-01,132,Queens,JFK Airport,Airports,2,Cash,471,471,0,32970.0,1939.25,0.0,2033.42,36942.67,0.0,36942.67,78.43
+2024-01,141,Manhattan,Lenox Hill West,Yellow Zone,1,Credit card,795,795,0,26632.8,3833.0,5887.63,0.0,36353.43,0.0,36353.43,45.73
+2024-01,140,Manhattan,Lenox Hill East,Yellow Zone,1,Credit card,820,820,0,26207.06,3975.0,5771.9,0.0,35953.96,0.0,35953.96,43.85
+2024-01,263,Manhattan,Yorkville West,Yellow Zone,1,Credit card,686,686,0,22072.44,3280.5,4800.64,0.0,30153.58,0.0,30153.58,43.96
+2024-01,138,Queens,LaGuardia Airport,Airports,2,Cash,435,435,0,24880.79,1755.25,0.0,1957.08,28593.12,0.0,28593.12,65.73
+2024-01,262,Manhattan,Yorkville East,Yellow Zone,1,Credit card,638,638,0,20613.68,3064.5,4558.32,0.0,28236.5,0.0,28236.5,44.26
+2024-01,238,Manhattan,Upper West Side North,Yellow Zone,1,Credit card,611,611,0,20138.39,2945.0,4455.55,0.0,27538.94,0.0,27538.94,45.07
+2024-01,113,Manhattan,Greenwich Village North,Yellow Zone,1,Credit card,574,574,0,18756.58,2789.5,4148.72,0.0,25694.8,0.0,25694.8,44.76
+2024-01,114,Manhattan,Greenwich Village South,Yellow Zone,1,Credit card,526,526,0,18090.07,2549.5,3967.38,0.0,24606.95,0.0,24606.95,46.78
+2024-01,246,Manhattan,West Chelsea/Hudson Yards,Yellow Zone,1,Credit card,553,553,0,17935.22,2638.5,3971.35,0.0,24545.07,0.0,24545.07,44.39
+2024-01,161,Manhattan,Midtown Center,Yellow Zone,2,Cash,623,623,0,19708.45,2920.5,0.0,0.0,22628.95,0.0,22628.95,36.32
+2024-01,100,Manhattan,Garment District,Yellow Zone,1,Credit card,498,498,0,16261.15,2371.0,3598.85,0.0,22231.0,0.0,22231.0,44.64
+2024-01,237,Manhattan,Upper East Side South,Yellow Zone,2,Cash,558,558,0,18433.27,2697.0,0.0,0.0,21130.27,0.0,21130.27,37.87
+2024-01,90,Manhattan,Flatiron,Yellow Zone,1,Credit card,459,459,0,15386.58,2189.5,3397.65,0.0,20973.73,0.0,20973.73,45.69
+2024-01,231,Manhattan,TriBeCa/Civic Center,Yellow Zone,1,Credit card,436,436,0,14647.61,2072.0,3201.81,0.0,19921.42,0.0,19921.42,45.69
+2024-01,87,Manhattan,Financial District North,Yellow Zone,1,Credit card,433,433,0,14626.84,2083.5,3178.47,0.0,19888.81,0.0,19888.81,45.93
+2024-01,88,Manhattan,Financial District South,Yellow Zone,1,Credit card,413,413,0,13894.55,1979.0,3050.6,0.0,18924.15,0.0,18924.15,45.82
+2024-01,236,Manhattan,Upper East Side North,Yellow Zone,2,Cash,510,510,0,16371.93,2475.5,0.0,0.0,18847.43,0.0,18847.43,36.96
+2024-01,162,Manhattan,Midtown East,Yellow Zone,2,Cash,487,487,0,15887.24,2322.0,0.0,0.0,18209.24,0.0,18209.24,37.39
+2024-01,186,Manhattan,Penn Station/Madison Sq West,Yellow Zone,2,Cash,444,444,0,14881.14,2153.5,0.0,0.0,17034.64,0.0,17034.64,38.37
+2024-01,230,Manhattan,Times Sq/Theatre District,Yellow Zone,2,Cash,447,447,0,14666.92,2145.0,0.0,0.0,16811.92,0.0,16811.92,37.61
+2024-01,261,Manhattan,World Trade Center,Yellow Zone,1,Credit card,366,366,0,11843.86,1745.0,2609.35,0.0,16198.21,0.0,16198.21,44.26
+2024-01,43,Manhattan,Central Park,Yellow Zone,1,Credit card,326,326,0,10713.69,1576.5,2381.09,0.0,14671.28,0.0,14671.28,45.0
+2024-01,13,Manhattan,Battery Park City,Yellow Zone,1,Credit card,305,305,0,9875.02,1424.0,2175.7,0.0,13474.72,0.0,13474.72,44.18
+2024-01,239,Manhattan,Upper West Side South,Yellow Zone,2,Cash,344,344,0,11653.34,1664.0,0.0,0.0,13317.34,0.0,13317.34,38.71
+2024-01,142,Manhattan,Lincoln Square East,Yellow Zone,2,Cash,350,350,0,11347.98,1688.0,0.0,0.0,13035.98,0.0,13035.98,37.25
+2024-01,7,Queens,Astoria,Boro Zone,1,Credit card,282,282,0,9440.87,645.0,1926.25,0.0,12012.12,0.0,12012.12,42.6
+2024-01,145,Queens,Long Island City/Hunters Point,Boro Zone,1,Credit card,266,266,0,8948.78,632.0,1834.09,0.0,11414.87,0.0,11414.87,42.91
+2024-01,170,Manhattan,Murray Hill,Yellow Zone,2,Cash,292,292,0,9972.81,1409.5,0.0,0.0,11382.31,0.0,11382.31,38.98
+2024-01,163,Manhattan,Midtown North,Yellow Zone,2,Cash,307,307,0,9836.34,1498.5,0.0,0.0,11334.84,0.0,11334.84,36.92
+2024-01,79,Manhattan,East Village,Yellow Zone,2,Cash,280,280,0,9428.34,1344.0,0.0,0.0,10772.34,0.0,10772.34,38.47
+2024-01,164,Manhattan,Midtown South,Yellow Zone,2,Cash,298,298,0,9329.86,1417.0,0.0,0.0,10746.86,0.0,10746.86,36.06
+2024-01,65,Brooklyn,Downtown Brooklyn/MetroTech,Boro Zone,1,Credit card,237,237,0,7776.24,540.0,1585.15,0.0,9901.39,0.0,9901.39,41.78
+2024-01,234,Manhattan,Union Sq,Yellow Zone,2,Cash,254,254,0,8160.06,1199.0,0.0,0.0,9359.06,0.0,9359.06,36.85
+2024-01,68,Manhattan,East Chelsea,Yellow Zone,2,Cash,244,244,0,7821.93,1158.5,0.0,0.0,8980.43,0.0,8980.43,36.81
+2024-01,48,Manhattan,Clinton East,Yellow Zone,2,Cash,238,238,0,7831.92,1144.5,0.0,0.0,8976.42,0.0,8976.42,37.72
+2024-01,140,Manhattan,Lenox Hill East,Yellow Zone,2,Cash,228,228,0,7643.92,1111.0,0.0,0.0,8754.92,0.0,8754.92,38.4
+2024-01,107,Manhattan,Gramercy,Yellow Zone,2,Cash,209,209,0,7198.21,993.0,0.0,0.0,8191.21,0.0,8191.21,39.19
+2024-01,33,Brooklyn,Brooklyn Heights,Boro Zone,1,Credit card,197,197,0,6426.19,429.0,1332.99,0.0,8188.18,0.0,8188.18,41.56
+2024-01,255,Brooklyn,Williamsburg (North Side),Boro Zone,1,Credit card,189,189,0,6364.82,446.0,1318.34,0.0,8129.16,0.0,8129.16,43.01
+2024-01,249,Manhattan,West Village,Yellow Zone,2,Cash,214,214,0,6851.94,1047.0,0.0,0.0,7898.94,0.0,7898.94,36.91
+2024-01,141,Manhattan,Lenox Hill West,Yellow Zone,2,Cash,188,188,0,6330.26,909.0,0.0,0.0,7239.26,0.0,7239.26,38.51
+2024-01,263,Manhattan,Yorkville West,Yellow Zone,2,Cash,187,187,0,5905.37,920.0,0.0,0.0,6825.37,0.0,6825.37,36.5
+2024-01,264,Unknown,NV,N/A,1,Credit card,151,151,0,4775.21,739.0,1057.99,0.0,6572.2,0.0,6572.2,43.52
+2024-01,113,Manhattan,Greenwich Village North,Yellow Zone,2,Cash,156,156,0,5221.29,749.5,0.0,0.0,5970.79,0.0,5970.79,38.27
+2024-01,262,Manhattan,Yorkville East,Yellow Zone,2,Cash,159,159,0,5212.63,753.5,0.0,0.0,5966.13,0.0,5966.13,37.52
+2024-01,238,Manhattan,Upper West Side North,Yellow Zone,2,Cash,145,145,0,4885.47,688.0,0.0,0.0,5573.47,0.0,5573.47,38.44
+2024-01,246,Manhattan,West Chelsea/Hudson Yards,Yellow Zone,2,Cash,133,133,0,4570.6,638.5,0.0,0.0,5209.1,0.0,5209.1,39.17
+2024-01,114,Manhattan,Greenwich Village South,Yellow Zone,2,Cash,129,129,0,4515.16,603.5,0.0,0.0,5118.66,0.0,5118.66,39.68
+2024-01,90,Manhattan,Flatiron,Yellow Zone,2,Cash,117,117,0,3878.4,567.5,0.0,0.0,4445.9,0.0,4445.9,38.0
+2024-01,100,Manhattan,Garment District,Yellow Zone,2,Cash,116,116,0,3728.51,547.0,0.0,0.0,4275.51,0.0,4275.51,36.86
+2024-01,132,Queens,JFK Airport,Airports,4,Dispute,57,52,5,3640.0,213.5,0.0,242.9,4096.4,-400.01,3696.39,78.78
+2024-01,87,Manhattan,Financial District North,Yellow Zone,2,Cash,104,104,0,3400.17,509.0,0.0,0.0,3909.17,0.0,3909.17,37.59
+2024-01,88,Manhattan,Financial District South,Yellow Zone,2,Cash,94,94,0,3039.77,442.5,0.0,0.0,3482.27,0.0,3482.27,37.05
+2024-01,261,Manhattan,World Trade Center,Yellow Zone,2,Cash,88,88,0,2881.17,430.5,0.0,0.0,3311.67,0.0,3311.67,37.63
+2024-01,138,Queens,LaGuardia Airport,Airports,4,Dispute,45,43,2,2445.96,168.25,0.0,235.96,2850.17,-124.88,2725.29,66.28
+2024-01,231,Manhattan,TriBeCa/Civic Center,Yellow Zone,2,Cash,76,76,0,2461.55,364.5,0.0,0.0,2826.05,0.0,2826.05,37.18
+2024-01,43,Manhattan,Central Park,Yellow Zone,2,Cash,72,72,0,2360.2,348.0,0.0,0.0,2708.2,0.0,2708.2,37.61
+2024-01,13,Manhattan,Battery Park City,Yellow Zone,2,Cash,71,71,0,2287.78,343.5,0.0,0.0,2631.28,0.0,2631.28,37.06
+2024-01,237,Manhattan,Upper East Side South,Yellow Zone,4,Dispute,69,66,3,2082.8,321.5,0.0,0.0,2404.3,-129.07,2275.23,36.43
+2024-01,7,Queens,Astoria,Boro Zone,2,Cash,71,71,0,2236.68,164.0,0.0,0.0,2400.68,0.0,2400.68,33.81
+2024-01,236,Manhattan,Upper East Side North,Yellow Zone,4,Dispute,61,58,3,1923.31,273.0,0.0,0.0,2196.31,-121.87,2074.44,37.87
+2024-01,132,Queens,JFK Airport,Airports,3,No charge,28,28,0,1960.0,115.5,0.0,97.16,2172.66,0.0,2172.66,77.59
+2024-01,161,Manhattan,Midtown Center,Yellow Zone,4,Dispute,66,61,5,1890.59,281.5,0.0,0.0,2172.09,-194.24,1977.85,35.61
+2024-01,145,Queens,Long Island City/Hunters Point,Boro Zone,2,Cash,58,58,0,2004.99,131.5,0.0,0.0,2136.49,0.0,2136.49,36.84
+2024-01,65,Brooklyn,Downtown Brooklyn/MetroTech,Boro Zone,2,Cash,62,62,0,1958.65,147.0,0.0,0.0,2105.65,0.0,2105.65,33.96
+2024-01,255,Brooklyn,Williamsburg (North Side),Boro Zone,2,Cash,48,48,0,1715.42,112.5,0.0,0.0,1827.92,0.0,1827.92,38.08
+2024-01,33,Brooklyn,Brooklyn Heights,Boro Zone,2,Cash,46,46,0,1592.54,102.5,0.0,0.0,1695.04,0.0,1695.04,36.85
+2024-01,186,Manhattan,Penn Station/Madison Sq West,Yellow Zone,4,Dispute,44,40,4,1348.43,182.0,0.0,0.0,1530.43,-179.85,1350.58,38.26
+2024-01,162,Manhattan,Midtown East,Yellow Zone,4,Dispute,47,41,6,1292.13,206.0,0.0,0.0,1498.13,-259.59,1238.54,36.54
+2024-01,230,Manhattan,Times Sq/Theatre District,Yellow Zone,4,Dispute,45,38,7,1212.14,185.0,0.0,0.0,1397.14,-277.11,1120.03,36.77
+2024-01,264,Unknown,NV,N/A,2,Cash,36,36,0,1172.91,177.0,0.0,0.0,1349.91,0.0,1349.91,37.5
+2024-01,163,Manhattan,Midtown North,Yellow Zone,4,Dispute,38,36,2,1155.31,171.0,0.0,0.0,1326.31,-89.56,1236.75,36.84
+2024-01,142,Manhattan,Lincoln Square East,Yellow Zone,4,Dispute,40,33,7,1117.19,160.0,0.0,0.0,1277.19,-301.1,976.09,38.7
+2024-01,237,Manhattan,Upper East Side South,Yellow Zone,3,No charge,32,32,0,1088.04,158.0,0.0,0.0,1246.04,0.0,1246.04,38.94
+2024-01,164,Manhattan,Midtown South,Yellow Zone,4,Dispute,33,31,2,1078.2,148.0,0.0,0.0,1226.2,-81.79,1144.41,39.55
+2024-01,170,Manhattan,Murray Hill,Yellow Zone,4,Dispute,37,35,2,1006.37,163.0,0.0,0.0,1169.37,-95.67,1073.7,33.41
+2024-01,48,Manhattan,Clinton East,Yellow Zone,4,Dispute,35,31,4,985.14,149.0,0.0,0.0,1134.14,-154.33,979.81,36.59
+2024-01,249,Manhattan,West Village,Yellow Zone,4,Dispute,32,28,4,913.23,136.0,0.0,0.0,1049.23,-136.23,913.0,37.47
+2024-01,161,Manhattan,Midtown Center,Yellow Zone,3,No charge,29,29,0,883.11,133.0,0.0,0.0,1016.11,0.0,1016.11,35.04
+2024-01,68,Manhattan,East Chelsea,Yellow Zone,4,Dispute,23,23,0,813.35,113.0,0.0,0.0,926.35,0.0,926.35,40.28
+2024-01,162,Manhattan,Midtown East,Yellow Zone,3,No charge,22,22,0,817.65,101.5,0.0,0.0,919.15,0.0,919.15,41.78
+2024-01,236,Manhattan,Upper East Side North,Yellow Zone,3,No charge,26,26,0,784.08,123.0,0.0,0.0,907.08,0.0,907.08,34.89
+2024-01,141,Manhattan,Lenox Hill West,Yellow Zone,4,Dispute,26,24,2,770.1,124.5,0.0,0.0,894.6,-82.1,812.5,37.27
+2024-01,140,Manhattan,Lenox Hill East,Yellow Zone,4,Dispute,24,24,0,775.27,112.0,0.0,0.0,887.27,0.0,887.27,36.97
+2024-01,164,Manhattan,Midtown South,Yellow Zone,3,No charge,21,21,0,760.73,106.5,0.0,0.0,867.23,0.0,867.23,41.3
+2024-01,79,Manhattan,East Village,Yellow Zone,4,Dispute,21,20,1,751.94,100.0,0.0,0.0,851.94,-54.65,797.29,42.6
+2024-01,239,Manhattan,Upper West Side South,Yellow Zone,3,No charge,22,22,0,735.51,115.0,0.0,0.0,850.51,0.0,850.51,38.66
+2024-01,186,Manhattan,Penn Station/Madison Sq West,Yellow Zone,3,No charge,18,18,0,689.95,90.5,0.0,0.0,780.45,0.0,780.45,43.36
+2024-01,239,Manhattan,Upper West Side South,Yellow Zone,4,Dispute,24,19,5,671.8,87.0,0.0,0.0,758.8,-193.56,565.24,39.94
+2024-01,107,Manhattan,Gramercy,Yellow Zone,4,Dispute,21,20,1,651.01,99.5,0.0,0.0,750.51,-48.9,701.61,37.53
+2024-01,138,Queens,LaGuardia Airport,Airports,3,No charge,11,11,0,619.98,45.25,0.0,41.64,706.87,0.0,706.87,64.26
+2024-01,142,Manhattan,Lincoln Square East,Yellow Zone,3,No charge,20,20,0,590.27,99.0,0.0,0.0,689.27,0.0,689.27,34.46
+2024-01,263,Manhattan,Yorkville West,Yellow Zone,4,Dispute,17,17,0,603.25,80.0,0.0,0.0,683.25,0.0,683.25,40.19
+2024-01,230,Manhattan,Times Sq/Theatre District,Yellow Zone,3,No charge,16,16,0,598.52,79.0,0.0,0.0,677.52,0.0,677.52,42.34
+2024-01,113,Manhattan,Greenwich Village North,Yellow Zone,4,Dispute,20,18,2,571.34,92.0,0.0,0.0,663.34,-110.39,552.95,36.85
+2024-01,234,Manhattan,Union Sq,Yellow Zone,4,Dispute,22,21,1,558.87,94.0,0.0,0.0,652.87,-57.98,594.89,31.09
+2024-01,68,Manhattan,East Chelsea,Yellow Zone,3,No charge,19,19,0,554.4,91.5,0.0,0.0,645.9,0.0,645.9,33.99
+2024-01,238,Manhattan,Upper West Side North,Yellow Zone,4,Dispute,18,17,1,504.69,78.0,0.0,0.0,582.69,-26.95,555.74,34.28
+2024-01,262,Manhattan,Yorkville East,Yellow Zone,4,Dispute,18,17,1,503.75,77.5,0.0,0.0,581.25,-17.1,564.15,34.19
+2024-01,140,Manhattan,Lenox Hill East,Yellow Zone,3,No charge,14,14,0,506.45,72.5,0.0,0.0,578.95,0.0,578.95,41.35
+2024-01,13,Manhattan,Battery Park City,Yellow Zone,4,Dispute,14,12,2,494.46,58.5,0.0,0.0,552.96,-65.99,486.97,46.08
+2024-01,234,Manhattan,Union Sq,Yellow Zone,3,No charge,15,15,0,464.59,67.5,0.0,0.0,532.09,0.0,532.09,35.47
+2024-01,79,Manhattan,East Village,Yellow Zone,3,No charge,13,13,0,454.21,65.5,0.0,0.0,519.71,0.0,519.71,39.98
+2024-01,249,Manhattan,West Village,Yellow Zone,3,No charge,12,12,0,444.51,63.0,0.0,0.0,507.51,0.0,507.51,42.29
+2024-01,263,Manhattan,Yorkville West,Yellow Zone,3,No charge,13,13,0,423.0,64.5,0.0,0.0,487.5,0.0,487.5,37.5
+2024-01,90,Manhattan,Flatiron,Yellow Zone,4,Dispute,16,15,1,397.25,75.0,0.0,0.0,472.25,-33.79,438.46,31.48
+2024-01,238,Manhattan,Upper West Side North,Yellow Zone,3,No charge,11,11,0,387.07,57.0,0.0,0.0,444.07,0.0,444.07,40.37
+2024-01,114,Manhattan,Greenwich Village South,Yellow Zone,3,No charge,12,12,0,367.81,56.0,0.0,0.0,423.81,0.0,423.81,35.32
+2024-01,231,Manhattan,TriBeCa/Civic Center,Yellow Zone,4,Dispute,11,10,1,370.61,52.5,0.0,0.0,423.11,-38.6,384.51,42.31
+2024-01,43,Manhattan,Central Park,Yellow Zone,4,Dispute,11,10,1,366.98,47.0,0.0,0.0,413.98,-23.44,390.54,41.4
+2024-01,87,Manhattan,Financial District North,Yellow Zone,4,Dispute,12,11,1,329.66,54.5,0.0,0.0,384.16,-32.75,351.41,34.92
+2024-01,246,Manhattan,West Chelsea/Hudson Yards,Yellow Zone,4,Dispute,9,9,0,307.85,46.0,0.0,0.0,353.85,0.0,353.85,39.32
+2024-01,163,Manhattan,Midtown North,Yellow Zone,3,No charge,8,8,0,301.71,37.5,0.0,0.0,339.21,0.0,339.21,42.4
+2024-01,262,Manhattan,Yorkville East,Yellow Zone,3,No charge,9,9,0,298.66,40.0,0.0,0.0,338.66,0.0,338.66,37.63
+2024-01,48,Manhattan,Clinton East,Yellow Zone,3,No charge,10,10,0,283.68,48.0,0.0,0.0,331.68,0.0,331.68,33.17
+2024-01,141,Manhattan,Lenox Hill West,Yellow Zone,3,No charge,8,8,0,267.87,39.5,0.0,0.0,307.37,0.0,307.37,38.42
+2024-01,100,Manhattan,Garment District,Yellow Zone,3,No charge,9,9,0,261.67,42.0,0.0,0.0,303.67,0.0,303.67,33.74
+2024-01,107,Manhattan,Gramercy,Yellow Zone,3,No charge,7,7,0,268.59,32.0,0.0,0.0,300.59,0.0,300.59,42.94
+2024-01,100,Manhattan,Garment District,Yellow Zone,4,Dispute,10,10,0,254.42,45.0,0.0,0.0,299.42,0.0,299.42,29.94
+2024-01,87,Manhattan,Financial District North,Yellow Zone,3,No charge,7,7,0,260.56,35.0,0.0,0.0,295.56,0.0,295.56,42.22
+2024-01,113,Manhattan,Greenwich Village North,Yellow Zone,3,No charge,7,7,0,250.75,36.5,0.0,0.0,287.25,0.0,287.25,41.04
+2024-01,88,Manhattan,Financial District South,Yellow Zone,4,Dispute,7,6,1,254.27,25.5,0.0,0.0,279.77,-53.67,226.1,46.63
+2024-01,114,Manhattan,Greenwich Village South,Yellow Zone,4,Dispute,11,8,3,222.06,40.0,0.0,0.0,262.06,-51.8,210.26,32.76
+2024-01,145,Queens,Long Island City/Hunters Point,Boro Zone,4,Dispute,9,9,0,232.09,25.0,0.0,0.0,257.09,0.0,257.09,28.57
+2024-01,261,Manhattan,World Trade Center,Yellow Zone,4,Dispute,10,7,3,219.06,32.0,0.0,0.0,251.06,-74.21,176.85,35.87
+2024-01,33,Brooklyn,Brooklyn Heights,Boro Zone,4,Dispute,7,7,0,213.41,16.0,0.0,0.0,229.41,0.0,229.41,32.77
+2024-01,7,Queens,Astoria,Boro Zone,4,Dispute,7,7,0,210.76,18.0,0.0,0.0,228.76,0.0,228.76,32.68
+2024-01,170,Manhattan,Murray Hill,Yellow Zone,3,No charge,7,7,0,187.23,34.5,0.0,0.0,221.73,0.0,221.73,31.68
+2024-01,246,Manhattan,West Chelsea/Hudson Yards,Yellow Zone,3,No charge,6,6,0,172.36,30.5,0.0,0.0,202.86,0.0,202.86,33.81
+2024-01,90,Manhattan,Flatiron,Yellow Zone,3,No charge,5,5,0,156.35,25.5,0.0,0.0,181.85,0.0,181.85,36.37
+2024-01,43,Manhattan,Central Park,Yellow Zone,3,No charge,5,5,0,157.15,24.0,0.0,0.0,181.15,0.0,181.15,36.23
+2024-01,33,Brooklyn,Brooklyn Heights,Boro Zone,3,No charge,3,3,0,152.18,7.5,0.0,0.0,159.68,0.0,159.68,53.23
+2024-01,88,Manhattan,Financial District South,Yellow Zone,3,No charge,4,4,0,129.66,17.5,0.0,0.0,147.16,0.0,147.16,36.79
+2024-01,261,Manhattan,World Trade Center,Yellow Zone,3,No charge,3,3,0,123.5,14.0,0.0,0.0,137.5,0.0,137.5,45.83
+2024-01,145,Queens,Long Island City/Hunters Point,Boro Zone,3,No charge,4,4,0,124.8,8.5,0.0,0.0,133.3,0.0,133.3,33.33
+2024-01,255,Brooklyn,Williamsburg (North Side),Boro Zone,4,Dispute,4,4,0,120.28,12.0,0.0,0.0,132.28,0.0,132.28,33.07
+2024-01,7,Queens,Astoria,Boro Zone,3,No charge,3,3,0,97.94,10.5,0.0,0.0,108.44,0.0,108.44,36.15
+2024-01,13,Manhattan,Battery Park City,Yellow Zone,3,No charge,2,2,0,89.39,8.0,0.0,0.0,97.39,0.0,97.39,48.7
+2024-01,231,Manhattan,TriBeCa/Civic Center,Yellow Zone,3,No charge,3,3,0,75.6,13.5,0.0,0.0,89.1,0.0,89.1,29.7
+2024-01,255,Brooklyn,Williamsburg (North Side),Boro Zone,3,No charge,3,3,0,78.68,9.0,0.0,0.0,87.68,0.0,87.68,29.23
+2024-01,65,Brooklyn,Downtown Brooklyn/MetroTech,Boro Zone,3,No charge,2,2,0,66.25,3.5,0.0,0.0,69.75,0.0,69.75,34.88
+2024-01,65,Brooklyn,Downtown Brooklyn/MetroTech,Boro Zone,4,Dispute,2,1,1,45.38,1.5,0.0,0.0,46.88,-43.31,3.57,46.88
+2024-01,264,Unknown,NV,N/A,4,Dispute,2,1,1,41.0,4.5,0.0,0.0,45.5,-47.66,-2.16,45.5
+2024-01,264,Unknown,NV,N/A,3,No charge,1,1,0,38.88,4.5,0.0,0.0,43.38,0.0,43.38,43.38

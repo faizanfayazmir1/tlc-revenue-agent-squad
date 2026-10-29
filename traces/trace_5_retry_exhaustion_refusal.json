@@ -1,0 +1,553 @@
+{
+  "run_id": "test_retry_exhaustion_refusal",
+  "month": "2025-01",
+  "parquet_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\data\\yellow_tripdata_2025-01.parquet",
+  "status": "REFUSED",
+  "steps_used": 3,
+  "max_steps": 12,
+  "retries_used": 0,
+  "max_retries": 1,
+  "total_cost_usd": 0.029,
+  "max_cost_usd": 0.25,
+  "resumed_from_checkpoint": false,
+  "skipped_stages": [],
+  "drift_assessment": {
+    "month": "2025-01",
+    "overall_severity": "ADAPTABLE_DRIFT",
+    "decision": "ADAPT_AND_PROCEED",
+    "findings": [
+      {
+        "drift_id": "DRIFT_CASE_AIRPORT_FEE",
+        "category": "SCHEMA_CASE_CHANGE",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "airport_fee",
+        "baseline_expectation": "Column 'Airport_fee' (exact case in 2024 schema)",
+        "observed_reality": "Column renamed with different casing: 'airport_fee'",
+        "impact_on_revenue": "Case-sensitive SQL references or Parquet readers would fail or drop airport fees.",
+        "proposed_action": "Map canonical 'Airport_fee' -> 'airport_fee' in SQL Builder and Verifier."
+      },
+      {
+        "drift_id": "DRIFT_NEW_FEE_COL_CBD_CONGESTION_FEE",
+        "category": "SCHEMA_NEW_REVENUE_COLUMN",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "cbd_congestion_fee",
+        "baseline_expectation": "19-column 2024 schema (no MTA CBD congestion fee column)",
+        "observed_reality": "20-column 2025 schema includes 'cbd_congestion_fee' (non-null in 100.0% of rows, range [-0.75, 0.75])",
+        "impact_on_revenue": "'cbd_congestion_fee' is included in passenger `total_amount` starting Jan 5, 2025. Omitting it from `surcharges_and_fees_usd` and itemized reconciliation causes component sum to understate `total_amount` by $0.75/trip on CBD rides.",
+        "proposed_action": "Adapt SQL Builder and Verifier to incorporate COALESCE(\"cbd_congestion_fee\", 0.0) into `surcharges_and_fees_usd` and accounting identity checks."
+      },
+      {
+        "drift_id": "DRIFT_DOMAIN_PAYMENT_TYPE_0",
+        "category": "DOMAIN_NEW_ENUM_VALUE",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "payment_type",
+        "baseline_expectation": "payment_type in {1..6} (2024 baseline codes)",
+        "observed_reality": "payment_type=0 ('Flex Fare trip') present in 3,298 rows (6.00% of dataset)",
+        "impact_on_revenue": "2025 Flex Fare trips have NULL in `congestion_surcharge` and `airport_fee` while populating `cbd_congestion_fee` and `total_amount`. Un-coalesced addition turns `surcharges_and_fees_usd` into NULL.",
+        "proposed_action": "Expand payment_type dimension to map 0 -> 'Flex Fare trip' and enforce COALESCE(..., 0.0) across all nullable surcharge columns."
+      },
+      {
+        "drift_id": "DRIFT_NULLABLE_FEE_CONGESTION_SURCHARGE",
+        "category": "DATA_NULLABILITY_SHIFT",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "congestion_surcharge",
+        "baseline_expectation": "0% NULLs in fee column 'congestion_surcharge'",
+        "observed_reality": "3,298 rows (6.00%) have NULL in 'congestion_surcharge'",
+        "impact_on_revenue": "Raw `col1 + col2` SQL arithmetic yields NULL if any fee column is NULL.",
+        "proposed_action": "Wrap 'congestion_surcharge' in COALESCE(\"congestion_surcharge\", 0.0) in all SQL expressions."
+      },
+      {
+        "drift_id": "DRIFT_NULLABLE_FEE_AIRPORT_FEE",
+        "category": "DATA_NULLABILITY_SHIFT",
+        "severity": "ADAPTABLE_DRIFT",
+        "column_or_field": "airport_fee",
+        "baseline_expectation": "0% NULLs in fee column 'airport_fee'",
+        "observed_reality": "3,298 rows (6.00%) have NULL in 'airport_fee'",
+        "impact_on_revenue": "Raw `col1 + col2` SQL arithmetic yields NULL if any fee column is NULL.",
+        "proposed_action": "Wrap 'airport_fee' in COALESCE(\"airport_fee\", 0.0) in all SQL expressions."
+      }
+    ],
+    "adaptation_plan": {
+      "can_proceed": true,
+      "column_mapping": {
+        "VendorID": "VendorID",
+        "tpep_pickup_datetime": "tpep_pickup_datetime",
+        "tpep_dropoff_datetime": "tpep_dropoff_datetime",
+        "passenger_count": "passenger_count",
+        "trip_distance": "trip_distance",
+        "RatecodeID": "RatecodeID",
+        "store_and_fwd_flag": "store_and_fwd_flag",
+        "PULocationID": "PULocationID",
+        "DOLocationID": "DOLocationID",
+        "payment_type": "payment_type",
+        "fare_amount": "fare_amount",
+        "extra": "extra",
+        "mta_tax": "mta_tax",
+        "tip_amount": "tip_amount",
+        "tolls_amount": "tolls_amount",
+        "improvement_surcharge": "improvement_surcharge",
+        "total_amount": "total_amount",
+        "congestion_surcharge": "congestion_surcharge",
+        "Airport_fee": "airport_fee",
+        "cbd_congestion_fee": "cbd_congestion_fee"
+      },
+      "active_surcharge_columns": [
+        "extra",
+        "mta_tax",
+        "improvement_surcharge",
+        "congestion_surcharge",
+        "airport_fee",
+        "cbd_congestion_fee"
+      ],
+      "payment_type_mapping": {
+        "0": "Flex Fare trip",
+        "1": "Credit card",
+        "2": "Cash",
+        "3": "No charge",
+        "4": "Dispute",
+        "5": "Unknown",
+        "6": "Voided trip"
+      },
+      "requires_null_coalesce_on_fees": true,
+      "requires_strict_temporal_filter": true,
+      "notes": [
+        "Map canonical 'Airport_fee' -> 'airport_fee' in SQL Builder and Verifier.",
+        "Adapt SQL Builder and Verifier to incorporate COALESCE(\"cbd_congestion_fee\", 0.0) into `surcharges_and_fees_usd` and accounting identity checks.",
+        "Expand payment_type dimension to map 0 -> 'Flex Fare trip' and enforce COALESCE(..., 0.0) across all nullable surcharge columns.",
+        "Wrap 'congestion_surcharge' in COALESCE(\"congestion_surcharge\", 0.0) in all SQL expressions.",
+        "Wrap 'airport_fee' in COALESCE(\"airport_fee\", 0.0) in all SQL expressions."
+      ]
+    },
+    "summary_rationale": "Detected 5 adaptable schema/domain drift finding(s) in 2025-01 (columns=['extra', 'mta_tax', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee', 'cbd_congestion_fee']). Safe adaptation plan synthesized."
+  },
+  "builder_attempts": [
+    {
+      "attempt_number": 1,
+      "sql_query": "WITH eligible_trips AS (\n    SELECT\n        COALESCE(CAST(t.\"PULocationID\" AS INTEGER), 264) AS pu_location_id,\n        COALESCE(z.\"Borough\", 'Unknown') AS borough,\n        COALESCE(z.\"Zone\", 'Unknown Zone (' || COALESCE(CAST(t.\"PULocationID\" AS TEXT), 'NULL') || ')') AS pickup_zone,\n        COALESCE(z.\"service_zone\", 'N/A') AS service_zone,\n        COALESCE(CAST(t.\"payment_type\" AS INTEGER), -1) AS payment_type_id,\n        CASE\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 0 THEN 'Flex Fare trip'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 1 THEN 'Credit card'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 2 THEN 'Cash'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 3 THEN 'No charge'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 4 THEN 'Dispute'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 5 THEN 'Unknown'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 6 THEN 'Voided trip'\n                    ELSE 'UNMAPPED_' || COALESCE(CAST(t.\"payment_type\" AS TEXT), 'NULL')\n                END AS payment_type_name,\n        CAST(t.\"fare_amount\" AS REAL) AS fare_amount,\n        (t.\"extra\" + t.\"mta_tax\" + t.\"improvement_surcharge\" + t.\"congestion_surcharge\" + t.\"airport_fee\" + t.\"cbd_congestion_fee\") AS row_surcharges_and_fees,\n        COALESCE(CAST(t.\"tip_amount\" AS REAL), 0.0) AS tip_amount,\n        COALESCE(CAST(t.\"tolls_amount\" AS REAL), 0.0) AS tolls_amount,\n        CAST(t.\"total_amount\" AS REAL) AS total_amount,\n        CASE\n            WHEN CAST(t.\"total_amount\" AS REAL) > 0.0 AND CAST(t.\"fare_amount\" AS REAL) >= 0.0 THEN 1\n            ELSE 0\n        END AS is_valid_billable_trip\n    FROM yellow_tripdata t\n    LEFT JOIN taxi_zone_lookup z\n        ON COALESCE(CAST(t.\"PULocationID\" AS INTEGER), 264) = CAST(z.\"LocationID\" AS INTEGER)\n    WHERE t.\"tpep_pickup_datetime\" >= '2025-01-01 00:00:00' AND t.\"tpep_pickup_datetime\" < '2025-02-01 00:00:00'\n)\nSELECT\n    '2025-01' AS year_month,\n    pu_location_id,\n    borough,\n    pickup_zone,\n    service_zone,\n    payment_type_id,\n    payment_type_name,\n    COUNT(*) AS total_trip_count,\n    SUM(CASE WHEN is_valid_billable_trip = 1 THEN 1 ELSE 0 END) AS valid_trip_count,\n    SUM(CASE WHEN is_valid_billable_trip = 0 THEN 1 ELSE 0 END) AS reversal_trip_count,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN fare_amount ELSE 0.0 END), 2) AS fare_revenue_usd,\n    ROUND(COALESCE(SUM(CASE WHEN is_valid_billable_trip = 1 THEN row_surcharges_and_fees ELSE 0.0 END), 0.0), 2) AS surcharges_and_fees_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN tip_amount ELSE 0.0 END), 2) AS tip_revenue_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN tolls_amount ELSE 0.0 END), 2) AS tolls_revenue_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN total_amount ELSE 0.0 END), 2) AS gross_passenger_revenue_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 0 THEN total_amount ELSE 0.0 END), 2) AS reversal_adjustments_usd,\n    ROUND(SUM(total_amount), 2) AS net_total_amount_usd,\n    ROUND(\n         COALESCE(\n            SUM(CASE WHEN is_valid_billable_trip = 1 THEN total_amount ELSE 0.0 END)\n            / NULLIF(SUM(CASE WHEN is_valid_billable_trip = 1 THEN 1 ELSE 0 END), 0),\n            0.0\n        ),\n        2\n    ) AS avg_revenue_per_trip_usd\nFROM eligible_trips\nGROUP BY\n    pu_location_id,\n    borough,\n    pickup_zone,\n    service_zone,\n    payment_type_id,\n    payment_type_name\nORDER BY\n    gross_passenger_revenue_usd DESC,\n    pu_location_id ASC,\n    payment_type_id ASC;",
+      "builder_reasoning": "Attempt 1 for 2025-01: Joined yellow_tripdata with taxi_zone_lookup on PULocationID=LocationID using LEFT JOIN (fallback LocationID 264). Included surcharge columns ['extra', 'mta_tax', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee', 'cbd_congestion_fee'] (row_level_coalesce=False, strict_temporal_filter=True). Segregated negative reversal trips (110 rows) from valid billable trips (54861 rows) to produce gross_passenger_revenue_usd=$2,689,193.04.",
+      "applied_fixes": [
+        "Adapted schema mapping for 5 drift finding(s): active_surcharge_columns=['extra', 'mta_tax', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee', 'cbd_congestion_fee'], payment_types=[0, 1, 2, 3, 4, 5, 6]."
+      ],
+      "summary_csv_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\outputs\\revenue_summary_2025-01.csv",
+      "summary_json_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\outputs\\revenue_summary_2025-01.json",
+      "output_row_count": 205,
+      "total_gross_revenue_usd": 2689193.04,
+      "total_net_revenue_usd": 2684635.71,
+      "execution_ms": 977.61,
+      "estimated_cost_usd": 0.012
+    }
+  ],
+  "verification_reports": [
+    {
+      "month": "2025-01",
+      "attempt_number": 1,
+      "passed": false,
+      "decision": "REJECT",
+      "checks": [
+        {
+          "check_id": "V1_SCHEMA_AND_COMPLETENESS",
+          "check_name": "Output Schema Completeness & Non-Null Integrity",
+          "passed": true,
+          "expected_contract": "All 18 contractual columns present, row_count > 0, and 0 NULL/NaN cells.",
+          "observed_evidence": "missing_cols=[], row_count=205, null_or_empty_cells=0",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        },
+        {
+          "check_id": "V2_TEMPORAL_BOUNDARY_AUDIT",
+          "check_name": "Strict Target Month Trip Count Reconciliation",
+          "passed": true,
+          "expected_contract": "Summary total_trip_count must equal exact in-month trip count (54,971) within [2025-01-01 00:00:00, 2025-02-01 00:00:00), excluding 29 out-of-month spillover rows.",
+          "observed_evidence": "summary_total_trip_count=54,971, independent_in_month_rows=54,971, excluded_spillover_rows=29",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        },
+        {
+          "check_id": "V3_GLOBAL_REVENUE_RECONCILIATION",
+          "check_name": "Global Recognized Revenue & Itemized Source Reconciliation",
+          "passed": true,
+          "expected_contract": "Summary gross_passenger_revenue_usd must match independent SQL query ($2,689,193.04) and raw itemized sum ($2,689,193.04) within rounding tolerance.",
+          "observed_evidence": "summary_gross=$2,689,193.04, independent_gross=$2,689,193.04 (diff=$0.00), independent_itemized_sum=$2,689,193.04 (raw_itemized_diff=$0.00)",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        },
+        {
+          "check_id": "V4_ACCOUNTING_IDENTITY_CHECK",
+          "check_name": "Summary Cell Horizontal Accounting Identity (Components == Gross Revenue)",
+          "passed": false,
+          "expected_contract": "For every (pickup_zone, payment_type) row: |fare + surcharges_and_fees + tip + tolls - gross_passenger_revenue_usd| <= $0.05",
+          "observed_evidence": "41 summary cells failed horizontal accounting identity. First failure: Zone=138 (LaGuardia Airport) / PT=0 (Flex Fare trip): components_sum=$13,746.25 vs gross=$14,188.00 (diff=$441.75)",
+          "severity": "CRITICAL",
+          "remediation_hint": "Check for SQL NULL propagation in surcharge columns (e.g., NULL congestion_surcharge or airport_fee on Flex Fare rows) or missing fee columns; wrap each surcharge column in COALESCE(col, 0.0) before summing."
+        },
+        {
+          "check_id": "V5_ZONE_JOIN_INTEGRITY",
+          "check_name": "TLC Pickup Zone Referential Integrity (1..265)",
+          "passed": true,
+          "expected_contract": "All pu_location_id values map to official TLC LocationIDs [1..265] with zero unjoined zones.",
+          "observed_evidence": "invalid_or_unjoined_zone_rows=0",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        },
+        {
+          "check_id": "V6_PAYMENT_TYPE_DOMAIN_CHECK",
+          "check_name": "Authorized Payment Type Code & Label Contract",
+          "passed": true,
+          "expected_contract": "All payment_type_id values in authorized set [0, 1, 2, 3, 4, 5, 6] with valid finance labels.",
+          "observed_evidence": "All 205 rows use authorized payment types.",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        },
+        {
+          "check_id": "V7_CELL_SPOT_CHECK",
+          "check_name": "Independent 5-Cell Granular SQL Spot-Check Audit",
+          "passed": true,
+          "expected_contract": "Top 5 (pickup_zone, payment_type) cells match independent raw SQL queries to the cent.",
+          "observed_evidence": "5/5 audited cells matched exact trip counts and gross_passenger_revenue_usd.",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        },
+        {
+          "check_id": "V8_STATISTICAL_SANITY_BOUNDS",
+          "check_name": "Unit Economics & Non-Negative Revenue Sanity Check",
+          "passed": true,
+          "expected_contract": "gross_passenger_revenue_usd >= 0 and avg_revenue_per_trip_usd within [$2.50, $500.00] for cells with >= 10 trips.",
+          "observed_evidence": "0 unit-economics outliers across 205 groups.",
+          "severity": "CRITICAL",
+          "remediation_hint": null
+        }
+      ],
+      "rejection_codes": [
+        "REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH"
+      ],
+      "remediation_hints": [
+        "Horizontal accounting identity failed (`fare + surcharges + tip + tolls != gross_passenger_revenue_usd`). Wrap each surcharge column in row-level COALESCE(col, 0.0) so NULLs in `congestion_surcharge` or `airport_fee` do not zero out `surcharges_and_fees_usd`."
+      ],
+      "independent_audit_metrics": {
+        "month": "2025-01",
+        "attempt_number": 1,
+        "decision": "REJECT",
+        "summary_row_count": 205,
+        "independent_in_month_trip_count": 54971,
+        "excluded_out_of_month_spillover_rows": 29,
+        "independent_gross_passenger_revenue_usd": 2689193.04,
+        "reported_gross_passenger_revenue_usd": 2689193.04,
+        "independent_itemized_component_sum_usd": 2689193.04,
+        "independent_reversal_adjustments_usd": -4557.33,
+        "reported_reversal_adjustments_usd": -4557.33,
+        "independent_net_total_amount_usd": 2684635.71,
+        "reported_net_total_amount_usd": 2684635.71,
+        "checks_passed": 7,
+        "checks_total": 8,
+        "isolation_verified": true
+      },
+      "evidence_file_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\outputs\\verifier_evidence_2025-01_attempt_1.json"
+    }
+  ],
+  "refusal_report": {
+    "month": "2025-01",
+    "run_id": "test_retry_exhaustion_refusal",
+    "refusal_stage": "STAGE_3_VERIFICATION_RETRY_EXHAUSTION",
+    "reason_code": "REFUSE_MAX_RETRIES_EXHAUSTED",
+    "headline": "Verifier rejected all 1 Builder attempts for 2025-01. Refusing to ship unverified revenue numbers and escalating to human review.",
+    "detailed_explanation": "After 1 bounded repair iterations, candidate output still violated contract checks: ['REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH'].",
+    "violated_contracts": [
+      "REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH"
+    ],
+    "evidence_metrics": {
+      "month": "2025-01",
+      "attempt_number": 1,
+      "decision": "REJECT",
+      "summary_row_count": 205,
+      "independent_in_month_trip_count": 54971,
+      "excluded_out_of_month_spillover_rows": 29,
+      "independent_gross_passenger_revenue_usd": 2689193.04,
+      "reported_gross_passenger_revenue_usd": 2689193.04,
+      "independent_itemized_component_sum_usd": 2689193.04,
+      "independent_reversal_adjustments_usd": -4557.33,
+      "reported_reversal_adjustments_usd": -4557.33,
+      "independent_net_total_amount_usd": 2684635.71,
+      "reported_net_total_amount_usd": 2684635.71,
+      "checks_passed": 7,
+      "checks_total": 8,
+      "isolation_verified": true
+    },
+    "human_escalation_action": "Escalate to Finance & Data Engineering with attached trace and Verifier rejection report."
+  },
+  "final_output_csv": null,
+  "final_output_json": null,
+  "final_verifier_evidence": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\outputs\\refusal_report_2025-01.json",
+  "events": [
+    {
+      "seq_no": 1,
+      "timestamp": "2026-10-29T02:23:11Z",
+      "agent": "RevenueSquadOrchestrator",
+      "stage": "STAGE_0_INIT",
+      "action": "INITIALIZE_OR_RESUME_RUN",
+      "tool_used": "DurableStateStore.init_or_load_run",
+      "status": "STARTED",
+      "summary": "Started new run 'test_retry_exhaustion_refusal' for month=2025-01 (bounds: max_steps=12, max_retries=1, max_cost_usd=$0.25).",
+      "details": {
+        "parquet_path": "C:\\Users\\faiza\\Downloads\\spyne\\spyne-revenue-squad\\spyne-revenue-squad\\data\\yellow_tripdata_2025-01.parquet",
+        "resumed": false
+      }
+    },
+    {
+      "seq_no": 2,
+      "timestamp": "2026-10-29T02:23:11Z",
+      "agent": "SourceProfilerAndDriftAgent",
+      "stage": "STAGE_1_PROFILE_AND_DRIFT",
+      "action": "PROFILE_SOURCE_AND_DETECT_DRIFT",
+      "tool_used": "inspect_parquet_schema + execute_readonly_sql",
+      "status": "ADAPT_AND_PROCEED",
+      "summary": "Detected 5 adaptable schema/domain drift finding(s) in 2025-01 (columns=['extra', 'mta_tax', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee', 'cbd_congestion_fee']). Safe adaptation plan synthesized.",
+      "details": {
+        "total_rows": 55000,
+        "in_month_rows": 54971,
+        "out_of_month_rows": 29,
+        "detected_fee_columns": [
+          "extra",
+          "mta_tax",
+          "improvement_surcharge",
+          "congestion_surcharge",
+          "airport_fee",
+          "cbd_congestion_fee"
+        ],
+        "payment_type_counts": {
+          "0": 3298,
+          "1": 40529,
+          "2": 9536,
+          "3": 554,
+          "4": 1083
+        },
+        "accounting_mismatch_rows": 0,
+        "accounting_mismatch_ratio": 0.0,
+        "drift_findings": [
+          {
+            "drift_id": "DRIFT_CASE_AIRPORT_FEE",
+            "category": "SCHEMA_CASE_CHANGE",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "airport_fee",
+            "baseline_expectation": "Column 'Airport_fee' (exact case in 2024 schema)",
+            "observed_reality": "Column renamed with different casing: 'airport_fee'",
+            "impact_on_revenue": "Case-sensitive SQL references or Parquet readers would fail or drop airport fees.",
+            "proposed_action": "Map canonical 'Airport_fee' -> 'airport_fee' in SQL Builder and Verifier."
+          },
+          {
+            "drift_id": "DRIFT_NEW_FEE_COL_CBD_CONGESTION_FEE",
+            "category": "SCHEMA_NEW_REVENUE_COLUMN",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "cbd_congestion_fee",
+            "baseline_expectation": "19-column 2024 schema (no MTA CBD congestion fee column)",
+            "observed_reality": "20-column 2025 schema includes 'cbd_congestion_fee' (non-null in 100.0% of rows, range [-0.75, 0.75])",
+            "impact_on_revenue": "'cbd_congestion_fee' is included in passenger `total_amount` starting Jan 5, 2025. Omitting it from `surcharges_and_fees_usd` and itemized reconciliation causes component sum to understate `total_amount` by $0.75/trip on CBD rides.",
+            "proposed_action": "Adapt SQL Builder and Verifier to incorporate COALESCE(\"cbd_congestion_fee\", 0.0) into `surcharges_and_fees_usd` and accounting identity checks."
+          },
+          {
+            "drift_id": "DRIFT_DOMAIN_PAYMENT_TYPE_0",
+            "category": "DOMAIN_NEW_ENUM_VALUE",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "payment_type",
+            "baseline_expectation": "payment_type in {1..6} (2024 baseline codes)",
+            "observed_reality": "payment_type=0 ('Flex Fare trip') present in 3,298 rows (6.00% of dataset)",
+            "impact_on_revenue": "2025 Flex Fare trips have NULL in `congestion_surcharge` and `airport_fee` while populating `cbd_congestion_fee` and `total_amount`. Un-coalesced addition turns `surcharges_and_fees_usd` into NULL.",
+            "proposed_action": "Expand payment_type dimension to map 0 -> 'Flex Fare trip' and enforce COALESCE(..., 0.0) across all nullable surcharge columns."
+          },
+          {
+            "drift_id": "DRIFT_NULLABLE_FEE_CONGESTION_SURCHARGE",
+            "category": "DATA_NULLABILITY_SHIFT",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "congestion_surcharge",
+            "baseline_expectation": "0% NULLs in fee column 'congestion_surcharge'",
+            "observed_reality": "3,298 rows (6.00%) have NULL in 'congestion_surcharge'",
+            "impact_on_revenue": "Raw `col1 + col2` SQL arithmetic yields NULL if any fee column is NULL.",
+            "proposed_action": "Wrap 'congestion_surcharge' in COALESCE(\"congestion_surcharge\", 0.0) in all SQL expressions."
+          },
+          {
+            "drift_id": "DRIFT_NULLABLE_FEE_AIRPORT_FEE",
+            "category": "DATA_NULLABILITY_SHIFT",
+            "severity": "ADAPTABLE_DRIFT",
+            "column_or_field": "airport_fee",
+            "baseline_expectation": "0% NULLs in fee column 'airport_fee'",
+            "observed_reality": "3,298 rows (6.00%) have NULL in 'airport_fee'",
+            "impact_on_revenue": "Raw `col1 + col2` SQL arithmetic yields NULL if any fee column is NULL.",
+            "proposed_action": "Wrap 'airport_fee' in COALESCE(\"airport_fee\", 0.0) in all SQL expressions."
+          }
+        ]
+      }
+    },
+    {
+      "seq_no": 3,
+      "timestamp": "2026-10-29T02:23:12Z",
+      "agent": "SQLRevenueBuilderAgent",
+      "stage": "STAGE_2_BUILD_ATTEMPT_1",
+      "action": "BUILD_REVENUE_SUMMARY_SQL",
+      "tool_used": "execute_readonly_sql",
+      "status": "BUILT_CANDIDATE",
+      "summary": "Attempt 1 for 2025-01: Joined yellow_tripdata with taxi_zone_lookup on PULocationID=LocationID using LEFT JOIN (fallback LocationID 264). Included surcharge columns ['extra', 'mta_tax', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee', 'cbd_congestion_fee'] (row_level_coalesce=False, strict_temporal_filter=True). Segregated negative reversal trips (110 rows) from valid billable trips (54861 rows) to produce gross_passenger_revenue_usd=$2,689,193.04.",
+      "details": {
+        "attempt_number": 1,
+        "output_row_count": 205,
+        "total_gross_revenue_usd": 2689193.04,
+        "total_net_revenue_usd": 2684635.71,
+        "applied_fixes": [
+          "Adapted schema mapping for 5 drift finding(s): active_surcharge_columns=['extra', 'mta_tax', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee', 'cbd_congestion_fee'], payment_types=[0, 1, 2, 3, 4, 5, 6]."
+        ],
+        "execution_ms": 977.61,
+        "sql_query": "WITH eligible_trips AS (\n    SELECT\n        COALESCE(CAST(t.\"PULocationID\" AS INTEGER), 264) AS pu_location_id,\n        COALESCE(z.\"Borough\", 'Unknown') AS borough,\n        COALESCE(z.\"Zone\", 'Unknown Zone (' || COALESCE(CAST(t.\"PULocationID\" AS TEXT), 'NULL') || ')') AS pickup_zone,\n        COALESCE(z.\"service_zone\", 'N/A') AS service_zone,\n        COALESCE(CAST(t.\"payment_type\" AS INTEGER), -1) AS payment_type_id,\n        CASE\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 0 THEN 'Flex Fare trip'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 1 THEN 'Credit card'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 2 THEN 'Cash'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 3 THEN 'No charge'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 4 THEN 'Dispute'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 5 THEN 'Unknown'\n                    WHEN CAST(t.\"payment_type\" AS INTEGER) = 6 THEN 'Voided trip'\n                    ELSE 'UNMAPPED_' || COALESCE(CAST(t.\"payment_type\" AS TEXT), 'NULL')\n                END AS payment_type_name,\n        CAST(t.\"fare_amount\" AS REAL) AS fare_amount,\n        (t.\"extra\" + t.\"mta_tax\" + t.\"improvement_surcharge\" + t.\"congestion_surcharge\" + t.\"airport_fee\" + t.\"cbd_congestion_fee\") AS row_surcharges_and_fees,\n        COALESCE(CAST(t.\"tip_amount\" AS REAL), 0.0) AS tip_amount,\n        COALESCE(CAST(t.\"tolls_amount\" AS REAL), 0.0) AS tolls_amount,\n        CAST(t.\"total_amount\" AS REAL) AS total_amount,\n        CASE\n            WHEN CAST(t.\"total_amount\" AS REAL) > 0.0 AND CAST(t.\"fare_amount\" AS REAL) >= 0.0 THEN 1\n            ELSE 0\n        END AS is_valid_billable_trip\n    FROM yellow_tripdata t\n    LEFT JOIN taxi_zone_lookup z\n        ON COALESCE(CAST(t.\"PULocationID\" AS INTEGER), 264) = CAST(z.\"LocationID\" AS INTEGER)\n    WHERE t.\"tpep_pickup_datetime\" >= '2025-01-01 00:00:00' AND t.\"tpep_pickup_datetime\" < '2025-02-01 00:00:00'\n)\nSELECT\n    '2025-01' AS year_month,\n    pu_location_id,\n    borough,\n    pickup_zone,\n    service_zone,\n    payment_type_id,\n    payment_type_name,\n    COUNT(*) AS total_trip_count,\n    SUM(CASE WHEN is_valid_billable_trip = 1 THEN 1 ELSE 0 END) AS valid_trip_count,\n    SUM(CASE WHEN is_valid_billable_trip = 0 THEN 1 ELSE 0 END) AS reversal_trip_count,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN fare_amount ELSE 0.0 END), 2) AS fare_revenue_usd,\n    ROUND(COALESCE(SUM(CASE WHEN is_valid_billable_trip = 1 THEN row_surcharges_and_fees ELSE 0.0 END), 0.0), 2) AS surcharges_and_fees_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN tip_amount ELSE 0.0 END), 2) AS tip_revenue_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN tolls_amount ELSE 0.0 END), 2) AS tolls_revenue_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 1 THEN total_amount ELSE 0.0 END), 2) AS gross_passenger_revenue_usd,\n    ROUND(SUM(CASE WHEN is_valid_billable_trip = 0 THEN total_amount ELSE 0.0 END), 2) AS reversal_adjustments_usd,\n    ROUND(SUM(total_amount), 2) AS net_total_amount_usd,\n    ROUND(\n         COALESCE(\n            SUM(CASE WHEN is_valid_billable_trip = 1 THEN total_amount ELSE 0.0 END)\n            / NULLIF(SUM(CASE WHEN is_valid_billable_trip = 1 THEN 1 ELSE 0 END), 0),\n            0.0\n        ),\n        2\n    ) AS avg_revenue_per_trip_usd\nFROM eligible_trips\nGROUP BY\n    pu_location_id,\n    borough,\n    pickup_zone,\n    service_zone,\n    payment_type_id,\n    payment_type_name\nORDER BY\n    gross_passenger_revenue_usd DESC,\n    pu_location_id ASC,\n    payment_type_id ASC;"
+      }
+    },
+    {
+      "seq_no": 4,
+      "timestamp": "2026-10-29T02:23:13Z",
+      "agent": "IndependentVerifierAgent",
+      "stage": "STAGE_3_VERIFY_ATTEMPT_1",
+      "action": "INDEPENDENT_CONTRACT_VERIFICATION",
+      "tool_used": "execute_readonly_sql (independent audit queries V1..V8)",
+      "status": "REJECT",
+      "summary": "Verifier REJECTED Attempt 1 for 2025-01: 7/8 checks passed. Rejection codes: ['REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH'].",
+      "details": {
+        "attempt_number": 1,
+        "decision": "REJECT",
+        "rejection_codes": [
+          "REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH"
+        ],
+        "remediation_hints": [
+          "Horizontal accounting identity failed (`fare + surcharges + tip + tolls != gross_passenger_revenue_usd`). Wrap each surcharge column in row-level COALESCE(col, 0.0) so NULLs in `congestion_surcharge` or `airport_fee` do not zero out `surcharges_and_fees_usd`."
+        ],
+        "independent_audit_metrics": {
+          "month": "2025-01",
+          "attempt_number": 1,
+          "decision": "REJECT",
+          "summary_row_count": 205,
+          "independent_in_month_trip_count": 54971,
+          "excluded_out_of_month_spillover_rows": 29,
+          "independent_gross_passenger_revenue_usd": 2689193.04,
+          "reported_gross_passenger_revenue_usd": 2689193.04,
+          "independent_itemized_component_sum_usd": 2689193.04,
+          "independent_reversal_adjustments_usd": -4557.33,
+          "reported_reversal_adjustments_usd": -4557.33,
+          "independent_net_total_amount_usd": 2684635.71,
+          "reported_net_total_amount_usd": 2684635.71,
+          "checks_passed": 7,
+          "checks_total": 8,
+          "isolation_verified": true
+        },
+        "checks": [
+          {
+            "check_id": "V1_SCHEMA_AND_COMPLETENESS",
+            "check_name": "Output Schema Completeness & Non-Null Integrity",
+            "passed": true,
+            "expected_contract": "All 18 contractual columns present, row_count > 0, and 0 NULL/NaN cells.",
+            "observed_evidence": "missing_cols=[], row_count=205, null_or_empty_cells=0",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          },
+          {
+            "check_id": "V2_TEMPORAL_BOUNDARY_AUDIT",
+            "check_name": "Strict Target Month Trip Count Reconciliation",
+            "passed": true,
+            "expected_contract": "Summary total_trip_count must equal exact in-month trip count (54,971) within [2025-01-01 00:00:00, 2025-02-01 00:00:00), excluding 29 out-of-month spillover rows.",
+            "observed_evidence": "summary_total_trip_count=54,971, independent_in_month_rows=54,971, excluded_spillover_rows=29",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          },
+          {
+            "check_id": "V3_GLOBAL_REVENUE_RECONCILIATION",
+            "check_name": "Global Recognized Revenue & Itemized Source Reconciliation",
+            "passed": true,
+            "expected_contract": "Summary gross_passenger_revenue_usd must match independent SQL query ($2,689,193.04) and raw itemized sum ($2,689,193.04) within rounding tolerance.",
+            "observed_evidence": "summary_gross=$2,689,193.04, independent_gross=$2,689,193.04 (diff=$0.00), independent_itemized_sum=$2,689,193.04 (raw_itemized_diff=$0.00)",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          },
+          {
+            "check_id": "V4_ACCOUNTING_IDENTITY_CHECK",
+            "check_name": "Summary Cell Horizontal Accounting Identity (Components == Gross Revenue)",
+            "passed": false,
+            "expected_contract": "For every (pickup_zone, payment_type) row: |fare + surcharges_and_fees + tip + tolls - gross_passenger_revenue_usd| <= $0.05",
+            "observed_evidence": "41 summary cells failed horizontal accounting identity. First failure: Zone=138 (LaGuardia Airport) / PT=0 (Flex Fare trip): components_sum=$13,746.25 vs gross=$14,188.00 (diff=$441.75)",
+            "severity": "CRITICAL",
+            "remediation_hint": "Check for SQL NULL propagation in surcharge columns (e.g., NULL congestion_surcharge or airport_fee on Flex Fare rows) or missing fee columns; wrap each surcharge column in COALESCE(col, 0.0) before summing."
+          },
+          {
+            "check_id": "V5_ZONE_JOIN_INTEGRITY",
+            "check_name": "TLC Pickup Zone Referential Integrity (1..265)",
+            "passed": true,
+            "expected_contract": "All pu_location_id values map to official TLC LocationIDs [1..265] with zero unjoined zones.",
+            "observed_evidence": "invalid_or_unjoined_zone_rows=0",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          },
+          {
+            "check_id": "V6_PAYMENT_TYPE_DOMAIN_CHECK",
+            "check_name": "Authorized Payment Type Code & Label Contract",
+            "passed": true,
+            "expected_contract": "All payment_type_id values in authorized set [0, 1, 2, 3, 4, 5, 6] with valid finance labels.",
+            "observed_evidence": "All 205 rows use authorized payment types.",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          },
+          {
+            "check_id": "V7_CELL_SPOT_CHECK",
+            "check_name": "Independent 5-Cell Granular SQL Spot-Check Audit",
+            "passed": true,
+            "expected_contract": "Top 5 (pickup_zone, payment_type) cells match independent raw SQL queries to the cent.",
+            "observed_evidence": "5/5 audited cells matched exact trip counts and gross_passenger_revenue_usd.",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          },
+          {
+            "check_id": "V8_STATISTICAL_SANITY_BOUNDS",
+            "check_name": "Unit Economics & Non-Negative Revenue Sanity Check",
+            "passed": true,
+            "expected_contract": "gross_passenger_revenue_usd >= 0 and avg_revenue_per_trip_usd within [$2.50, $500.00] for cells with >= 10 trips.",
+            "observed_evidence": "0 unit-economics outliers across 205 groups.",
+            "severity": "CRITICAL",
+            "remediation_hint": null
+          }
+        ]
+      }
+    },
+    {
+      "seq_no": 5,
+      "timestamp": "2026-10-29T02:23:13Z",
+      "agent": "RevenueSquadOrchestrator",
+      "stage": "STAGE_4_FINALIZE_REFUSAL",
+      "action": "REFUSE_AND_ESCALATE_TO_HUMAN",
+      "tool_used": null,
+      "status": "REFUSED",
+      "summary": "Verifier rejected all 1 Builder attempts for 2025-01. Refusing to ship unverified revenue numbers and escalating to human review. Reason=REFUSE_MAX_RETRIES_EXHAUSTED. Escalation=Escalate to Finance & Data Engineering with attached trace and Verifier rejection report.",
+      "details": {
+        "month": "2025-01",
+        "run_id": "test_retry_exhaustion_refusal",
+        "refusal_stage": "STAGE_3_VERIFICATION_RETRY_EXHAUSTION",
+        "reason_code": "REFUSE_MAX_RETRIES_EXHAUSTED",
+        "headline": "Verifier rejected all 1 Builder attempts for 2025-01. Refusing to ship unverified revenue numbers and escalating to human review.",
+        "detailed_explanation": "After 1 bounded repair iterations, candidate output still violated contract checks: ['REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH'].",
+        "violated_contracts": [
+          "REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH"
+        ],
+        "evidence_metrics": {
+          "month": "2025-01",
+          "attempt_number": 1,
+          "decision": "REJECT",
+          "summary_row_count": 205,
+          "independent_in_month_trip_count": 54971,
+          "excluded_out_of_month_spillover_rows": 29,
+          "independent_gross_passenger_revenue_usd": 2689193.04,
+          "reported_gross_passenger_revenue_usd": 2689193.04,
+          "independent_itemized_component_sum_usd": 2689193.04,
+          "independent_reversal_adjustments_usd": -4557.33,
+          "reported_reversal_adjustments_usd": -4557.33,
+          "independent_net_total_amount_usd": 2684635.71,
+          "reported_net_total_amount_usd": 2684635.71,
+          "checks_passed": 7,
+          "checks_total": 8,
+          "isolation_verified": true
+        },
+        "human_escalation_action": "Escalate to Finance & Data Engineering with attached trace and Verifier rejection report."
+      }
+    }
+  ]
+}

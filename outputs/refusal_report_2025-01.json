@@ -1,0 +1,30 @@
+{
+  "month": "2025-01",
+  "run_id": "test_retry_exhaustion_refusal",
+  "refusal_stage": "STAGE_3_VERIFICATION_RETRY_EXHAUSTION",
+  "reason_code": "REFUSE_MAX_RETRIES_EXHAUSTED",
+  "headline": "Verifier rejected all 1 Builder attempts for 2025-01. Refusing to ship unverified revenue numbers and escalating to human review.",
+  "detailed_explanation": "After 1 bounded repair iterations, candidate output still violated contract checks: ['REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH'].",
+  "violated_contracts": [
+    "REJECT_V4_ACCOUNTING_IDENTITY_MISMATCH"
+  ],
+  "evidence_metrics": {
+    "month": "2025-01",
+    "attempt_number": 1,
+    "decision": "REJECT",
+    "summary_row_count": 205,
+    "independent_in_month_trip_count": 54971,
+    "excluded_out_of_month_spillover_rows": 29,
+    "independent_gross_passenger_revenue_usd": 2689193.04,
+    "reported_gross_passenger_revenue_usd": 2689193.04,
+    "independent_itemized_component_sum_usd": 2689193.04,
+    "independent_reversal_adjustments_usd": -4557.33,
+    "reported_reversal_adjustments_usd": -4557.33,
+    "independent_net_total_amount_usd": 2684635.71,
+    "reported_net_total_amount_usd": 2684635.71,
+    "checks_passed": 7,
+    "checks_total": 8,
+    "isolation_verified": true
+  },
+  "human_escalation_action": "Escalate to Finance & Data Engineering with attached trace and Verifier rejection report."
+}
